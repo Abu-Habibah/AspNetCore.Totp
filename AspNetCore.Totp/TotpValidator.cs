@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AspNetCore.Totp.Interface;
+using AspNetCore.Totp.Models;
 
 namespace AspNetCore.Totp
 {
@@ -23,6 +24,12 @@ namespace AspNetCore.Totp
         public bool Validate(string accountSecretKey, int clientTotp, int timeToleranceInSeconds = 60)
         {
             var codes = this.totpGenerator.GetValidTotps(accountSecretKey, TimeSpan.FromSeconds(timeToleranceInSeconds));
+            return codes.Any(c => c == clientTotp);
+        }
+
+        public bool Validate(string accountSecretKey, int clientTotp, TimeTolerance timeToleranceInSeconds )
+        {
+            var codes = this.totpGenerator.GetValidTotps(accountSecretKey, TimeSpan.FromSeconds((double)timeToleranceInSeconds));
             return codes.Any(c => c == clientTotp);
         }
     }
